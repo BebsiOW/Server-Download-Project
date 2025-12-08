@@ -50,7 +50,8 @@ int main()
     {
         printf("(L)ist Files\n(D)ownload\n(Q)uit\n\nWhat would you like to do: ");
         scanf(" %c", &input);
-
+        
+        // Option 1: List
         if(input == 'L' || input == 'l')
         {
             fprintf(s, "LIST\n");
@@ -71,13 +72,17 @@ int main()
             }
             printf("\n\n");
         }
+
+        // Option 2: Download
         else if(input == 'D' || input == 'd')
         {
-            int refreshBar = 50000;
-            char downFile[30];
             int size;
+            int refreshBar = 50000;
             int buffer_size = 1000;
+
+            char downFile[30];
             char buffer[buffer_size];
+            
             int transferred = 0;
             
 
@@ -86,7 +91,7 @@ int main()
 
             fprintf(s, "SIZE %s\n", downFile);
             fgets(response, sizeof(response), s);
-            sscanf(response, "+OK %d", &size);
+            sscanf(response, "+OK %d", &size); // reads size of file
 
             fprintf(s, "GET %s\n", downFile);
             fgets(response, sizeof(response), s);
@@ -110,6 +115,7 @@ int main()
 
             FILE *output = fopen(downFile, "wb");
 
+            // Length-Prefix Framing
             while (transferred < size)
             {
                 int remaining = size - transferred;
@@ -125,6 +131,7 @@ int main()
                 
                 transferred += bytes_received;
 
+                // Progress Bar
                 if (transferred >= refreshBar)
                 { 
                     system("clear");
@@ -137,6 +144,8 @@ int main()
 
             fclose(output);
         }
+
+        // Option 3: Quit
         else  if(input == 'Q' || input == 'q')
         {
             fprintf(s, "QUIT\n");
@@ -144,6 +153,8 @@ int main()
             break;
         }
         else
+
+        // Option 4: Panic
         {
             printf("Please enter a valid option (Ex: 'd' or 'L')\n");
         }
