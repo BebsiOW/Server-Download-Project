@@ -91,6 +91,23 @@ int main()
             fprintf(s, "GET %s\n", downFile);
             fgets(response, sizeof(response), s);
 
+            // Check if file already exists
+            FILE *exists = fopen(downFile, "r");
+            if (exists != NULL)
+            {
+                fclose(exists);  
+
+                char choice;
+                printf("File '%s' already exists. Overwrite? (y/n): ", downFile);
+                scanf(" %c", &choice);
+
+                if (choice != 'y' && choice != 'Y')
+                {
+                    printf("Download canceled.\n\n");
+                    continue; 
+                }
+            }
+
             FILE *output = fopen(downFile, "wb");
 
             while (transferred < size)
