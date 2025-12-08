@@ -73,6 +73,7 @@ int main()
         }
         else if(input == 'D' || input == 'd')
         {
+            int refreshBar = 50000;
             char downFile[30];
             int size;
             int buffer_size = 1000;
@@ -92,13 +93,30 @@ int main()
 
             FILE *output = fopen(downFile, "wb");
 
-            while(transferred < size)
+            while (transferred < size)
             {
                 int remaining = size - transferred;
-                int bytes_received = fread(buffer, 1, remaining, s);
+                int bytes_wanted;
+
+                    if (remaining < buffer_size)
+                        bytes_wanted = remaining;
+                    else
+                        bytes_wanted = buffer_size;
+
+                int bytes_received = fread(buffer, 1, bytes_wanted, s);
                 fwrite(buffer, 1, bytes_received, output);
+                
                 transferred += bytes_received;
+
+                if (transferred >= refreshBar)
+                { 
+                    system("clear");
+                    printf("There are %d bytes left!\n", remaining);
+                    refreshBar += 750000;
+                }
             }
+
+            printf("Downloaded!\n\n");
 
             fclose(output);
         }
